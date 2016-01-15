@@ -1,0 +1,7 @@
+.img .text {
+visibility:hidden;
+}
+
+.img:hover .text {
+visibility:visible;
+}

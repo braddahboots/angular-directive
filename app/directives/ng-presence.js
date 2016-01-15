@@ -16,7 +16,7 @@ module.controller('PresenceCtrl', [
       presence.unsubscribe(channelName);
     };
     $interval(function(){
-      $scope.radnomize();
+      $scope.randomize();
     }, 2500);
   }
 ]);
@@ -34,24 +34,22 @@ module.factory('auth', [
   }
 ]);
 
+//directive mock
 module.directive('ngPresence', function() {
   return {
     restrict: 'A',
     scope: {channel: '=ngPresence'},
     template: [
       '<li ng-repeat="user in channel">',
-      '<img ng-src="{{ user.imageUrl }}" width="25" height="25"  />',
-      '<p style="visibility:hidden">"{{ user.username }}" "({{ user.username }})"</p>',
+      '<div class="img">',
+      '<img class="hover" ng-src="{{ user.imageUrl }}" width="30" height="30"  />',
+      '<span class="text">{{ user.username }}({{ user.username }})</span>',
+      '</div>',
       '</li>'
     ].join(''),
     controller: ['$scope', 'auth', function($scope, auth) {
       $scope.currentUser = auth.currentUser;
     }],
-    link: function(scope, elem, attrs) {
-      elem.bind('mouseover', function() {
-        elem.css('visibility', 'visible');
-      });
-    }
   };
 });
 
@@ -63,6 +61,7 @@ module.factory('presence', [
   function($filter, $http, auth){
     var capitalize = $filter('uppercase');
     var channels = {};
+    console.log('channels', channels);
     return {
       // Subscribe to the channel.
       subscribe: function(channelName){
@@ -86,7 +85,7 @@ module.factory('presence', [
           url: 'https://randomuser.me/api'
         }).then(function(response){
           var randomUser = response.data.results[0].user;
-          console.log(randomUser);
+          console.log('random', randomUser);
           var user = {
             name: capitalize(randomUser.name.first) + ' ' + capitalize(randomUser.name.last),
             username: randomUser.username,
@@ -106,6 +105,7 @@ module.factory('presence', [
     };
   }
 ]);
+
 
 //"availability" is an object specific to an activity and stores a date and time said activity can be booked.
 //need to access a channelName object which should have the "availability" and logged-in "users"
@@ -134,5 +134,3 @@ module.factory('presence', [
 //set max visible images with a "+" X amount of additional users (array.length - max)
 //establish css setting when image is hovered over that username and name are visible
 //$filter | viewing current test user from basecase
-
-//directive mock.
