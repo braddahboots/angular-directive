@@ -6,17 +6,8 @@ module.controller('PresenceCtrl', [
   function($scope, $interval, presence){
     $scope.channel = presence.subscribe('channel-1');
     $scope.randomize = presence.update;
-
-    // this is just for simulation to test current directive
-    $scope.subscribe = function(channelName) {
-      $scope.channel = presence.subscribe(channelName);
-    };
-    $scope.unsubscribe = function(channelName) {
-      $scope.channel = null;
-      presence.unsubscribe(channelName);
-    };
     $interval(function(){
-      $scope.radnomize();
+      $scope.randomize();
     }, 2500);
   }
 ]);
@@ -33,27 +24,6 @@ module.factory('auth', [
     };
   }
 ]);
-
-module.directive('ngPresence', function() {
-  return {
-    restrict: 'A',
-    scope: {channel: '=ngPresence'},
-    template: [
-      '<li ng-repeat="user in channel">',
-      '<img ng-src="{{ user.imageUrl }}" width="25" height="25"  />',
-      '<p style="visibility:hidden">"{{ user.username }}" "({{ user.username }})"</p>',
-      '</li>'
-    ].join(''),
-    controller: ['$scope', 'auth', function($scope, auth) {
-      $scope.currentUser = auth.currentUser;
-    }],
-    link: function(scope, elem, attrs) {
-      elem.bind('mouseover', function() {
-        elem.css('visibility', 'visible');
-      });
-    }
-  };
-});
 
 // Presence mock.
 module.factory('presence', [
@@ -136,3 +106,31 @@ module.factory('presence', [
 //$filter | viewing current test user from basecase
 
 //directive mock.
+module.directive('ngPresence', function() {
+  return {
+    restrict: 'A',
+    scope: {channelName: '=ngPresence'},
+    template: [
+      '<li ng-repeat="user in channel">',
+      '<img ng-src="{{ user.imageUrl }}" width="25" height="25"  />',
+      '<p style="visibility:hidden">"{{ user.username }}" "({{ user.username }})"</p>',
+      '</li>'
+    ].join(''),
+    controller: ['$scope', 'presence', function($scope, presence) {
+      console.log(presence);
+      // this is just for simulation to test current directive
+      $scope.subscribe = function(channelName) {
+        $scope.channel = presence.subscribe(channelName);
+      };
+      $scope.unsubscribe = function(channelName) {
+        $scope.channel = null;
+        presence.unsubscribe(channelName);
+      };
+    }],
+    link: function(scope, elem, attrs) {
+      elem.bind('mouseover', function() {
+        elem.css('visibility', 'visible');
+      });
+    }
+  };
+});

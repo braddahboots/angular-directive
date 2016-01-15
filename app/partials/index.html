@@ -12,13 +12,11 @@
   <body ng-app="presenceChannels" ng-controller="PresenceCtrl">
     <h1>Hey it's channel 1!</h1>
     <ul>
-      <div ng-presence="{{ channel }}"></div>
-      <li ng-repeat="user in channel">
-        <img ng-src="{{ user.imageUrl }}" width="25" height="25" />
-        {{ user.name }} ({{ user.username }})
-      </li>
+      <div ng-presence="channel"></div>
     </ul>
     <button ng-click="randomize()">Update the channel</button>
+    <button ng-click="subscribe( channel )">Subscribe</button>
+    <button ng-click="unsubscribe( channel )">Unsubscribe</button>
   </body>
 
 </html>

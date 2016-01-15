@@ -1,7 +1,7 @@
 Presence channels
 In FareHarbor we have a kind of object called an "availability", which represents a particular date and time that an activity can be booked. When you are viewing a book form (for instance,https://fareharbor.com/sailingcat/items/5/availability/3970422/book/) you are booking an availability. One feature we want to implement for our logged-in "company users" (employees of an activity provider) is a display of the users that are currently booking the availability too -- that way, if the reservationist next to you is booking as well, you can more easily coordinate so you don't have a situation in which you both want to book the same slots for different customers. In the future we'd even associate the number of "seats" each user is currently booking on a particular book form, so we can improve the experience further.
 
-We plan to use websockets to allow users to "subscribe" to Pusher presence channels, one per availability. When the user loads up the availability, they will subscribe to the channel. When they leave the availability (by booking or by navigating elsewhere) they will unsubscribe. That way other users that are subscribed to the same channel can view all of the users that are in the channel.
+We plan to use websockets to allow users to "subscribe" to Pusher presence channels, one per "availability". When the user loads up the "availability", they will subscribe to the channel. When they leave the "availability" (by booking or by navigating elsewhere) they will unsubscribe. That way other users that are subscribed to the same channel can view all of the users that are in the channel.
 
 For this project, you can assume the existence of a presence service that allows you to subscribe to arbitrary channels by name. We haven't built this yet, but it will be based on the Pusher Client Presence Channel API (https://pusher.com/docs/client_api_guide/client_presence_channels) and will roughly include the following methods:
 
@@ -12,6 +12,7 @@ presence.subscribe(channel_name): subscribe to the channel. Returns a list of us
   username: "kelly",
   image_url: "https://somewhere.com/an-image.jpg"
 }
+
 The list of users returned can be watched via $watchCollection -- it will automatically be updated with new users as they subscribe and unsubscribe. We'll assume that the presence directive is responsible for rendering any errors in some out-of-band way -- for now we can assume that the list of users returned will always be the right list.
 
 presence.unsubscribe(channel_name): unsubscribe from the channel, returns nothing.
@@ -20,7 +21,7 @@ The project here is to implement a directive, ng-presence, that takes as its arg
 
 Usage should look like this:
 
-<div ng-presence="{{ someObject.someChannelName }}"></div>
+<div ng-presence="someObject.someChannelName"></div>
 And should produce something that is somehow reminiscent of the thing you see in Google Docs all of the time:
 
 Inline image 1
