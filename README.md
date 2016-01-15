@@ -36,4 +36,4 @@ See this plnkr for the implementations of mock presence and authservices. The pr
 
 Feel free to create you own repo that includes the implementation of ng-presence as well as, at least, a simple example page (or link to a plnkr of one) that shows your directive in action in a few different settings.
 
-
+test
