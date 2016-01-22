@@ -1,7 +1,8 @@
-.img .text {
+ul li .text {
 visibility:hidden;
 }
 
-.img:hover .text {
+ul li:hover .text {
 visibility:visible;
 }
+

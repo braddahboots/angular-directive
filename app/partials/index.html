@@ -5,18 +5,20 @@
     <script data-require="angular.js@1.4.3" data-semver="1.4.3" src="https://code.angularjs.org/1.4.3/angular.js"></script>
     <script data-require="lodash.js@3.8.0" data-semver="3.8.0" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.8.0/lodash.js"></script>
     <script data-require="jquery@2.1.4" data-semver="2.1.4" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <link rel="stylesheet" href="../app.css" />
-    <script src="../directives/ng-presence.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js"></script>
   </head>
 
+
+
   <body ng-app="presenceChannels" ng-controller="PresenceCtrl">
-    <h1>Hey it's channel 1!</h1>
-    <ul>
-      <div ng-presence="channel"></div>
-    </ul>
-    <button ng-click="randomize()">Update the channel</button>
-    <button ng-click="subscribe( channel )">Subscribe</button>
-    <button ng-click="unsubscribe( channel )">Unsubscribe</button>
+    <form name="myForm">
+      <label>Select Channel:
+        <input type="text" name="input" ng-model="channels.channelName">
+      </label>
+      <h1>Hey it's {{ channels.channelName }}!</h1>
+        <div ng-presence="channel"></div>
+    </form>
   </body>
 
 </html>

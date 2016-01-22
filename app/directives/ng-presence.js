@@ -4,17 +4,14 @@ module.controller('PresenceCtrl', [
   '$interval',
   'presence',
   function($scope, $interval, presence){
-    $scope.channel = presence.subscribe('channel-1');
+    $scope.channels = {
+      channelName : 'Channel-1'
+    };
+
+    $scope.channel = presence.subscribe($scope.channelName);
+
     $scope.randomize = presence.update;
 
-    // this is just for simulation to test current directive
-    $scope.subscribe = function(channelName) {
-      $scope.channel = presence.subscribe(channelName);
-    };
-    $scope.unsubscribe = function(channelName) {
-      $scope.channel = null;
-      presence.unsubscribe(channelName);
-    };
     $interval(function(){
       $scope.randomize();
     }, 2500);
@@ -40,15 +37,51 @@ module.directive('ngPresence', function() {
     restrict: 'A',
     scope: {channel: '=ngPresence'},
     template: [
-      '<li ng-repeat="user in channel">',
-      '<div class="img">',
+      '<ul>',
+      '<li ng-repeat="user in channel track by $index" ng-if="user !== currentUser">',
       '<img class="hover" ng-src="{{ user.imageUrl }}" width="30" height="30"  />',
-      '<span class="text">{{ user.username }}({{ user.username }})</span>',
-      '</div>',
-      '</li>'
+      '<span class="text">{{ user.username }} ({{ user.name }})</span>',
+      '</li>',
+      '</ul>',
+      '<button ng-click="subscribe( channel )">Subscribe</button>',
+      '<button ng-click="unsubscribe( channel )">Unsubscribe</button>'
     ].join(''),
-    controller: ['$scope', 'auth', function($scope, auth) {
+    controller: ['$scope', 'auth', 'presence', function($scope, auth, presence) {
+
+      //pass current user onto scope
       $scope.currentUser = auth.currentUser;
+
+      $scope.count = function(channel) {
+        var counter = null;
+        for(var i = 0; i < channel.length - 3; i++) {
+            counter++;
+        }
+        return counter;
+      };
+
+      //update channel subscription
+      $scope.updateChannel = function(channel){
+        $scope.channel = channel;
+        channel.push(auth.currentUser);
+      };
+
+      //calls current user to subscribe to channel
+      $scope.subscribe = function(channel) {
+        console.log(channel);
+        $scope.channel = channel;
+        channel.push(auth.currentUser);
+        console.log('You have entered' + $scope.channel);
+      };
+
+      //calls current user to unsubscribe from channel
+      $scope.unsubscribe = function(channel) {
+        for(var i = 0; i < channel.length; i++) {
+          if($scope.currentUser === channel[i]) {
+            console.log(channel[i].username + ' has left');
+            channel.splice(i,1);
+          }
+        }
+      };
     }],
   };
 });
@@ -85,7 +118,6 @@ module.factory('presence', [
           url: 'https://randomuser.me/api'
         }).then(function(response){
           var randomUser = response.data.results[0].user;
-          console.log('random', randomUser);
           var user = {
             name: capitalize(randomUser.name.first) + ' ' + capitalize(randomUser.name.last),
             username: randomUser.username,
